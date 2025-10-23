@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { File, Menu as MenuIcon, X as CloseIcon } from "lucide-react";
@@ -64,12 +65,8 @@ export default function Navbar() {
             </div>
           </SignedIn>
           <SignedOut>
-            <Button className="px-5 py-2 rounded-lg font-semibold bg-indigo-700 text-white hover:bg-indigo-800 shadow transition-all">
               <SignInButton />
-            </Button>
-            <Button className="px-5 py-2 rounded-lg font-semibold bg-white text-indigo-700 border border-indigo-700 hover:bg-indigo-50 transition-all">
               <SignUpButton />
-            </Button>
           </SignedOut>
         </div>
         {/* Hamburger Icon for Mobile */}

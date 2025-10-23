@@ -4,6 +4,7 @@ import "./globals.css";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const dmsans = DM_Sans({
 subsets:["latin"]
@@ -25,6 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <ClerkProvider>
     <html lang="en">
       <body className={`${dmsans.className}`}>
         <Navbar />
@@ -34,6 +36,7 @@ export default function RootLayout({
         </main>
         <Footer />
       </body>
-    </html>
+      </html>
+      </ClerkProvider>
   );
 }
