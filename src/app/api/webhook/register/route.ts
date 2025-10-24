@@ -47,14 +47,12 @@ export async function POST(req: Request) {
       if (!email) {
         return new Response("No primary email found", { status: 400 });
         }
-        console.log("Creating user with email:", email);
       await db.insert(usersTable).values({
     
         name: first_name || "No Name",
           email: email,
         image: image_url,
       });
-      console.log(`User created: ${email}`);
     } catch (error) {
       return new Response("Error creating user", { status: 500 });
     }
