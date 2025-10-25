@@ -5,6 +5,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "sonner";
 
 const dmsans = DM_Sans({
 subsets:["latin"]
@@ -34,7 +35,8 @@ export default function RootLayout({
 
         {children}
         </main>
-        <Footer />
+          <Footer />
+          <Toaster position="top-right" />
       </body>
       </html>
       </ClerkProvider>
