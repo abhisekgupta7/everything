@@ -41,10 +41,10 @@ export default function Navbar() {
           <SignedIn>
             <li>
               <Link
-                href="/summary"
+                href="/upload"
                 className="px-2 py-1 rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-colors"
               >
-                Summary
+                Upload
               </Link>
             </li>
             <li>

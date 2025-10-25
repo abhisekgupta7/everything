@@ -11,6 +11,7 @@ import {
 
 import { ReactNode } from "react";
 import { Rocket } from "lucide-react";
+import { z } from "zod";
 
 type Feature = {
   name: string;
@@ -89,3 +90,19 @@ export const plans: Plans[] = [
     priceId: "price_1NGLXyL4k0b2aY2uYqvXH3tK",
   },
 ];
+
+
+
+
+export const uploadSchema = z.object({
+  pdfFile: z
+    .instanceof(File)
+    .refine((file) => file.type === "application/pdf", {
+      message: "Only PDF files are allowed",
+    }).refine((file)=>file.size<=20*1024*1024,{
+      message:"File size should be less than 20MB"
+    }),
+  
+  
+});
+ export type UploadFormData = z.infer<typeof uploadSchema>;
