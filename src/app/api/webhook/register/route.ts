@@ -5,8 +5,6 @@ import db from "@/lib/db";
 import { usersTable } from "@/lib/db/schema";
 
 export async function POST(req: Request) {
-
-
   const webhookSecret = process.env.WEBHOOK_SECRET!;
   if (!webhookSecret) {
     throw new Error("Webhook secret not configured");
@@ -39,21 +37,29 @@ export async function POST(req: Request) {
 
   if (eventType === "user.created") {
     try {
-      const { email_addresses, primary_email_address_id ,first_name, id: userId ,image_url} = event.data;
+      const {
+        email_addresses,
+        primary_email_address_id,
+        first_name,
+        id: userId,
+        image_url,
+      } = event.data;
       const emailObj = email_addresses?.find(
-          (email: any) => email.id === primary_email_address_id
-        );
-        const email = emailObj?.email_address || "";
+        (email: any) => email.id === primary_email_address_id
+      );
+      const email = emailObj?.email_address || "";
       if (!email) {
         return new Response("No primary email found", { status: 400 });
-        }
+      }
       await db.insert(usersTable).values({
-    
+        clerkId: userId,
         name: first_name || "No Name",
-          email: email,
+        email: email,
         image: image_url,
       });
+      console.log(`User created with Clerk ID: ${userId}`);
     } catch (error) {
+      console.error("Error creating user:", error);
       return new Response("Error creating user", { status: 500 });
     }
   }
