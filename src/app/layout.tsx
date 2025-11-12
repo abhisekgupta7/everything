@@ -29,13 +29,13 @@ export default function RootLayout({
   return (
     <ClerkProvider>
     <html lang="en">
-      <body className={`${dmsans.className}`}>
+      <body className={` min-h-screen flex flex-col ${dmsans.className}`}>
         <Navbar />
-        <main>
+        <main className="flex-1">
 
         {children}
         </main>
-          <Footer />
+          <Footer/>
           <Toaster position="top-right" />
       </body>
       </html>

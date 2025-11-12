@@ -19,7 +19,7 @@ export default function Footer({
     return (
         <footer
             aria-label="Site footer"
-            className={`w-full bg-transparent py-6 ${className}`}
+            className={`w-full bg-transparent buttom-6 py-6 ${className}`}
         >
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <Separator className="mb-4" />

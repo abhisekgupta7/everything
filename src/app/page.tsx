@@ -5,14 +5,7 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle, Sparkles, Star, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 
-import {
-  Card,
-  CardTitle,
-  CardDescription,
-  CardHeader,
-  CardFooter,
-  CardContent,
-} from "@/components/ui/card";
+
 import { Button } from "@/components/ui/button";
 import { plans } from "@/lib/constants";
 import { features } from "@/lib/constants";
