@@ -1,4 +1,5 @@
 import { pgTable, integer, varchar, timestamp } from "drizzle-orm/pg-core";
+import { InferSelectModel,InferInsertModel } from "drizzle-orm";
 
 export const usersTable = pgTable("users", {
   id: integer("id").generatedAlwaysAsIdentity().primaryKey(),
@@ -43,3 +44,14 @@ export const paymentsTable = pgTable("payments", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+
+export type User = InferSelectModel<typeof usersTable>; 
+export type NewUser = InferInsertModel<typeof usersTable>;
+
+export type Summary = InferSelectModel<typeof summariesTable>;  
+export type NewSummary = InferInsertModel<typeof summariesTable>;
+
+export type Payment = InferSelectModel<typeof paymentsTable>;
+export type NewPayment = InferInsertModel<typeof paymentsTable>;
+

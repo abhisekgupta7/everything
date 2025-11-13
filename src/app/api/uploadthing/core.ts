@@ -1,7 +1,7 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
-import extractSummaryFromPdf from "../../../../actions/summary";
+import extractSummaryFromPdf from "../../../actions/summary";
 const f = createUploadthing();
 
 export const ourFileRouter = {
