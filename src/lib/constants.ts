@@ -70,8 +70,8 @@ export const plans: Plans[] = [
       "Basic AI summarization",
       "Email support",
     ],
-    paymentLink: "https://buy.stripe.com/test_14k14g4mZcC0e1W6op",
-    priceId: "price_1NGLWDL4k0b2aY2u0lXH3tK",
+    paymentLink: "https://buy.stripe.com/test_8x2cN514p86Qgbrgitebu00",
+    priceId: "prod_TQ4Xs0tYn093Ou",
   },
   {
     id: "pro",
@@ -84,9 +84,11 @@ export const plans: Plans[] = [
       "Priority email support",
       "Access to new features",
     ],
-    paymentLink: "https://buy.stripe.com/test_14k14g4mZcC0e1W6op",
-    priceId: "price_1NGLXyL4k0b2aY2uYqvXH3tK",
+    paymentLink: process.env.NODE_ENV==='development'?"https://buy.stripe.com/test_14A4gz9AV86Q4sJ1nzebu01":"https://buy.stripe.com/test_8x2cN514p86Qgbrgitebu00",
+    priceId: "prod_TQ4ZQxUrVWXUuS",
   },
+   
+  
 ];
 
 

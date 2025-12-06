@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { File, Menu as MenuIcon, X as CloseIcon } from "lucide-react";
 import { useState } from "react";
 
+
 import {
   SignInButton,
   SignUpButton,
@@ -57,6 +58,7 @@ export default function Navbar() {
             </li>
           </SignedIn>
         </ul>
+
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center gap-2 sm:gap-4">
           <SignedIn>

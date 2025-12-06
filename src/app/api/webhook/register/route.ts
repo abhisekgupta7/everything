@@ -5,14 +5,14 @@ import db from "@/lib/db";
 import { usersTable } from "@/lib/db/schema";
 
 export async function POST(req: Request) {
-  const webhookSecret = process.env.WEBHOOK_SECRET!;
+  const webhookSecret = process.env.CLERK_WEBHOOK_SECRET!;
   if (!webhookSecret) {
     throw new Error("Webhook secret not configured");
   }
   const headerPayload = headers();
-  const svix_id = (await headerPayload).get("svix-id") || "";
-  const svix_timestamp = (await headerPayload).get("svix-timestamp") || "";
-  const svix_signature = (await headerPayload).get("svix-signature") || "";
+  const svix_id = ( headerPayload).get("svix-id") || "";
+  const svix_timestamp = ( headerPayload).get("svix-timestamp") || "";
+  const svix_signature = ( headerPayload).get("svix-signature") || "";
 
   if (!svix_id || !svix_timestamp || !svix_signature) {
     return new Response("Missing Svix headers", { status: 400 });

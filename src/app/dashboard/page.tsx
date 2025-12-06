@@ -1,12 +1,36 @@
+export const dynamic = "force-dynamic";
+
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, Plus } from "lucide-react";
 import { getSummary } from "@/actions/dataFetch";
 import type { Summary } from "@/lib/db/schema";
+import { getSummaryCount, getUserPlanStatus, getUserPriceId } from "@/lib/user";
+import { currentUser } from "@clerk/nextjs/server";
+import { plans } from "@/lib/constants";
+import { redirect } from "next/navigation";
 
-export default async function HomePage() {
-  const uploadlimit = 5;
+export default async function DashboardPage() {
+  const user = await currentUser();
+  if (!user) {
+    return null;
+  }
+  const userid = user.id as unknown as number;
+  const email = user.emailAddresses[0]?.emailAddress || "";
+
+  const sumaryCount = await getSummaryCount(userid);
+  const priceId = await getUserPriceId(email);
+  const plan = plans.find((p) => p.priceId === priceId);
+  const isPro = plan && plan.name === "Pro";
+  const uploadlimit = isPro ? 1000 : 5;
+
+  const isactive = await getUserPlanStatus(email);
+  if (isactive !== "active") { 
+ redirect('/dashboardFallback');
+  }
+
+
   // Fetch summaries on the server
   let summaries: Summary[] = [];
   try {
@@ -36,19 +60,35 @@ export default async function HomePage() {
           </Link>
         </p>
 
-        <Button asChild>
+        
+        {
+          sumaryCount > uploadlimit ? ( <Button asChild>
           <Link href="/upload" className="inline-flex items-center">
             <Plus className="mr-2 h-4 w-4" />
             New Summary
           </Link>
-        </Button>
-      </div>
+        </Button>) : null
+       }
 
+      </div>
+     
+
+     
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {summaries.length === 0 ? (
+        {summaries.length === 0 ? (<>
           <p className="text-center text-slate-500 col-span-1 md:col-span-2 lg:col-span-3">
             No summaries yet.
           </p>
+          <div>
+            <p>Upload your first pdf to get started with AI-powered summaries.</p>
+            <Button asChild className="mt-4">
+          <Link href="/upload" className="inline-flex items-center">
+                Create Your First Summary
+                <Plus className="mr-2 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+        </>
         ) : (
           summaries.map((summary) => (
             <Card key={summary.id} className="p-4 h-full">
@@ -76,6 +116,8 @@ export default async function HomePage() {
           ))
         )}
       </div>
+
+
     </div>
   );
 }
