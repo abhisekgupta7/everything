@@ -10,6 +10,7 @@ import PlanBadge from "@/components/PlanBadge";
 
 const dmsans = DM_Sans({
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
