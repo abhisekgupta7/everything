@@ -35,7 +35,6 @@ export default function RootLayout({
       <html lang="en">
         <body className={` min-h-screen flex flex-col ${dmsans.className}`}>
           <Navbar />
-          <PlanBadge />
           <main className="flex-1">{children}</main>
           <Footer />
           <Toaster position="top-right" />

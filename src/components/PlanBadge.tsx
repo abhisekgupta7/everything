@@ -24,22 +24,22 @@ export default async function planBadge() {
   return (
     <div
       className={cn(
-        "inline-flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 cursor-pointer",
+        "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full transition-all duration-300 cursor-pointer w-fit",
         priceId
-          ? "bg-linear-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-lg hover:shadow-xl hover:scale-105 border border-purple-400/50"
+          ? "bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-md hover:shadow-lg border border-purple-400/50"
           : "bg-slate-100 text-slate-600 shadow-sm hover:shadow-md hover:bg-slate-200 border border-slate-200"
       )}
     >
       <Crown
         className={cn(
-          "h-4 w-4",
+          "h-3.5 w-3.5 flex-shrink-0",
           priceId ? "fill-yellow-300 text-yellow-300" : "text-slate-400"
         )}
       />
       <span
         className={cn(
-          "text-sm",
-          priceId ? "font-semibold tracking-wide" : "font-medium"
+          "text-xs whitespace-nowrap",
+          priceId ? "font-semibold" : "font-medium"
         )}
       >
         {planname}

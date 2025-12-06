@@ -11,6 +11,7 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
+import PlanBadge from "./PlanBadge";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -61,6 +62,7 @@ export default function Navbar() {
         {/* Desktop Auth Buttons */}
         <div className="hidden md:flex items-center gap-2 sm:gap-4">
           <SignedIn>
+            <PlanBadge />
             <div className="ml-2">
               <UserButton afterSignOutUrl="/" />
             </div>
