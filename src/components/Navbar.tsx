@@ -33,7 +33,7 @@ export default function Navbar() {
         <ul className="hidden md:flex items-center gap-8 text-lg font-medium">
           <li>
             <Link
-              href="#pricing"
+              href="/#pricing"
               className="px-2 py-1 rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-colors"
             >
               Pricing
@@ -126,7 +126,7 @@ export default function Navbar() {
           {/* Navigation Links */}
           <nav className="flex flex-col gap-2 flex-1">
             <Link
-              href="#pricing"
+              href="/#pricing"
               className="px-4 py-3 rounded-lg text-gray-700 hover:text-indigo-700 hover:bg-indigo-50 transition-colors font-medium"
               onClick={() => setMobileOpen(false)}
             >
