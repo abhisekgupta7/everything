@@ -53,6 +53,7 @@ export default async function DashboardPage() {
           plan.{" "}
           <Link
             href="/#pricing"
+            scroll={true}
             className="inline-flex items-center gap-1 text-blue-600"
           >
             Click here to upgrade to Pro <ArrowRight />
