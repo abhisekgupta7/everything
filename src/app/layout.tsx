@@ -9,16 +9,14 @@ import { Toaster } from "sonner";
 import PlanBadge from "@/components/PlanBadge";
 
 const dmsans = DM_Sans({
-subsets:["latin"]
+  subsets: ["latin"],
 });
-
-
 
 export const metadata: Metadata = {
   title: "All-in-one",
   description: "Everything you need to develop a complete web app",
-   icons: {
-    icon: '/favicon.png',
+  icons: {
+    icon: "/favicon.png",
   },
 };
 
@@ -28,19 +26,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-    <html lang="en">
-      <body className={` min-h-screen flex flex-col ${dmsans.className}`}>
+    <ClerkProvider
+      afterSignInUrl="/dashboard"
+      afterSignOutUrl="/"
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+    >
+      <html lang="en">
+        <body className={` min-h-screen flex flex-col ${dmsans.className}`}>
           <Navbar />
-                  <PlanBadge />
-        <main className="flex-1">
-
-        {children}
-        </main>
-          <Footer/>
+          <PlanBadge />
+          <main className="flex-1">{children}</main>
+          <Footer />
           <Toaster position="top-right" />
-      </body>
+        </body>
       </html>
-      </ClerkProvider>
+    </ClerkProvider>
   );
 }
