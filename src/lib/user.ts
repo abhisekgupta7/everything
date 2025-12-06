@@ -9,9 +9,7 @@ export async function getUserPriceId(email: string) {
         .where(eq(usersTable.email, email) && eq(usersTable.status, "active"))
         .limit(1);
 
-    if (query.length === 0) {
-        throw new Error("User not found");
-    }
+ 
 
     return query[0]?.priceId;
 }
@@ -21,9 +19,7 @@ export async function getUserPlanStatus(email: string) {
         .from(usersTable)
         .where(eq(usersTable.email, email))
         .limit(1);
-    if (query.length === 0) {
-        throw new Error("User not found");
-    }   
+  
     return query[0]?.status;
 }
 export async function getSummaryCount(userId: number) {
