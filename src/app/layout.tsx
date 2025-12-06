@@ -27,11 +27,15 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider
-      signInFallbackRedirectUrl="/dashboard"
-      signUpFallbackRedirectUrl="/dashboard"
-      signInUrl="/sign-in"
-      signUpUrl="/sign-up"
-    >
+  afterSignInUrl={
+    process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}/dashboard`
+      : "/dashboard"
+  }
+  afterSignOutUrl="/"
+  signInUrl="/sign-in"
+  signUpUrl="/sign-up"
+>
       <html lang="en">
         <body className={` min-h-screen flex flex-col ${dmsans.className}`}>
           <Navbar />
