@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
+import PlanBadge from "@/components/PlanBadge";
 
 const dmsans = DM_Sans({
 subsets:["latin"]
@@ -30,7 +31,8 @@ export default function RootLayout({
     <ClerkProvider>
     <html lang="en">
       <body className={` min-h-screen flex flex-col ${dmsans.className}`}>
-        <Navbar />
+          <Navbar />
+                  <PlanBadge />
         <main className="flex-1">
 
         {children}

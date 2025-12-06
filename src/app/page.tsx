@@ -388,13 +388,15 @@ function PricingSection() {
                   </div>
 
                   {/* CTA Button */}
-                  <Button className={`w-full py-3 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ${
+                  <Link href={plan.paymentLink}>
+                     <Button className={`w-full py-3 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ${
                     isPro 
                       ? "bg-amber-500 hover:bg-amber-600" 
                       : "bg-slate-900 hover:bg-slate-800"
                   }`}>
                     Choose {plan.name}
                   </Button>
+                  </Link>
                 </div>
               </motion.div>
             );
