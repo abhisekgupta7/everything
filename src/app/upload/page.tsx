@@ -1,5 +1,5 @@
 import { currentUser } from "@clerk/nextjs/server";
-import { getSummaryCount, getUserPriceId } from "@/lib/user";
+import { getSummaryCountByClerkId, getUserPriceId } from "@/lib/user";
 import { plans } from "@/lib/constants";
 import { redirect } from "next/navigation";
 import UploadFormClient from "@/components/UploadFormClient";
@@ -11,10 +11,10 @@ export default async function UploadPage() {
     redirect("/sign-in");
   }
 
-  const userid = user.id as unknown as number;
+  const clerkId = user.id;
   const email = user.emailAddresses[0]?.emailAddress || "";
 
-  const summaryCount = await getSummaryCount(userid);
+  const summaryCount = await getSummaryCountByClerkId(clerkId);
   const priceId = await getUserPriceId(email);
   const plan = plans.find((p) => p.priceId === priceId);
   const isPro = plan?.name === "Pro";
