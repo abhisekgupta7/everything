@@ -13,16 +13,16 @@ export default async function planBadge() {
   const email = user?.emailAddresses?.[0]?.emailAddress;
   let priceId: string | null = null;
   if (email) {
-    const priceId = await getUserPriceId(email);
+    priceId = await getUserPriceId(email);
   }
   let planname = "Buy a Plan";
   const plan = plans.find((p) => p.priceId === priceId);
   if (plan) {
-    planname = plan.name; 
+    planname = plan.name;
   }
 
-    return
-    (<div
+  return (
+    <div
       className={cn(
         "inline-flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 cursor-pointer",
         priceId
@@ -44,5 +44,6 @@ export default async function planBadge() {
       >
         {planname}
       </span>
-    </div>)
+    </div>
+  );
 }
