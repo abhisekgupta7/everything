@@ -5,13 +5,13 @@ import {
   summariesTable,
   type Summary,
 } from "../lib/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 
 export async function getUserPriceId(email: string) {
   const query = await db
     .select()
     .from(usersTable)
-    .where(eq(usersTable.email, email) && eq(usersTable.status, "active"))
+    .where(and(eq(usersTable.email, email), eq(usersTable.status, "active")))
     .limit(1);
 
   return query[0]?.priceId;

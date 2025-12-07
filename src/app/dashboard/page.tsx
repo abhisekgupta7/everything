@@ -1,6 +1,5 @@
 export const dynamic = "force-dynamic";
 
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, Plus } from "lucide-react";
@@ -10,6 +9,7 @@ import { getSummaryCount, getUserPlanStatus, getUserPriceId } from "@/lib/user";
 import { currentUser } from "@clerk/nextjs/server";
 import { plans } from "@/lib/constants";
 import { redirect } from "next/navigation";
+import SummaryCard from "@/components/SummaryCard";
 
 export default async function DashboardPage() {
   const user = await currentUser();
@@ -60,7 +60,7 @@ export default async function DashboardPage() {
           </Link>
         </p>
 
-        {sumaryCount > uploadlimit ? (
+        {sumaryCount < uploadlimit ? (
           <Button asChild>
             <Link href="/upload" className="inline-flex items-center">
               <Plus className="mr-2 h-4 w-4" />
@@ -70,48 +70,29 @@ export default async function DashboardPage() {
         ) : null}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {summaries.length === 0 ? (
-          <>
-            <p className="text-center text-slate-500 col-span-1 md:col-span-2 lg:col-span-3">
-              No summaries yet.
+          <div className="col-span-full text-center py-12">
+            <p className="text-slate-500 mb-4">
+              No summaries yet. Upload your first PDF to get started with
+              AI-powered summaries.
             </p>
-            <div>
-              <p>
-                Upload your first pdf to get started with AI-powered summaries.
-              </p>
-              <Button asChild className="mt-4">
-                <Link href="/upload" className="inline-flex items-center">
-                  Create Your First Summary
-                  <Plus className="mr-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-          </>
+            <Button asChild>
+              <Link href="/upload" className="inline-flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Create Your First Summary
+              </Link>
+            </Button>
+          </div>
         ) : (
           summaries.map((summary) => (
-            <Card key={summary.id} className="p-4 h-full">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h2 className="text-xl font-semibold">
-                    {summary.title || "Untitled"}
-                  </h2>
-                  <p className="text-sm text-slate-600">
-                    {summary.fileName} -{" "}
-                    {new Date(summary.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-                <div>
-                  <Link
-                    href={`/summary/${summary.id}`}
-                    className="text-blue-600 text-sm"
-                    rel="noreferrer"
-                  >
-                    View Summary
-                  </Link>
-                </div>
-              </div>
-            </Card>
+            <SummaryCard
+              key={summary.id}
+              id={summary.id}
+              title={summary.title}
+              fileName={summary.fileName}
+              createdAt={summary.createdAt}
+            />
           ))
         )}
       </div>
