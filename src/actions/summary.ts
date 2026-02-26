@@ -16,7 +16,7 @@ type FileData = {
 
 export default async function extractSummaryFromPdf(
   pdfUrl: string,
-  uploadedFile: FileData
+  uploadedFile: FileData,
 ): Promise<string> {
   if (!pdfUrl) {
     throw new Error("Invalid PDF URL");
@@ -50,15 +50,19 @@ export default async function extractSummaryFromPdf(
     }
 
     // Save to database
-    await db.insert(summariesTable).values({
-      userId: dbUserId,
-      fileName: fileName,
-      originFileUrl: pdfUrl,
-      summaryText: openAiSummary,
-      status: "completed",
-      title: fileName.replace(/\.pdf$/i, ""), // Remove .pdf extension for title
-    });
+    const result = await db
+      .insert(summariesTable)
+      .values({
+        userId: dbUserId,
+        fileName: fileName,
+        originFileUrl: pdfUrl,
+        summaryText: openAiSummary,
+        status: "completed",
+        title: fileName.replace(/\.pdf$/i, ""), // Remove .pdf extension for title
+      })
+      .returning();
 
+    console.log("Summary saved to database:", result[0]?.id);
     return openAiSummary;
   } catch (openAiError) {
     console.error("OpenAI Error:", openAiError);
@@ -72,15 +76,19 @@ export default async function extractSummaryFromPdf(
       }
 
       // Save Gemini summary to database
-      await db.insert(summariesTable).values({
-        userId: dbUserId,
-        fileName: uploadedFile.fileName,
-        originFileUrl: pdfUrl,
-        summaryText: geminiSummary,
-        status: "completed",
-        title: uploadedFile.fileName.replace(/\.pdf$/i, ""),
-      });
+      const result = await db
+        .insert(summariesTable)
+        .values({
+          userId: dbUserId,
+          fileName: uploadedFile.fileName,
+          originFileUrl: pdfUrl,
+          summaryText: geminiSummary,
+          status: "completed",
+          title: uploadedFile.fileName.replace(/\.pdf$/i, ""),
+        })
+        .returning();
 
+      console.log("Gemini summary saved to database:", result[0]?.id);
       return geminiSummary;
     } catch (geminiError) {
       console.error("Gemini Error:", geminiError);
