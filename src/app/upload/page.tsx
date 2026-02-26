@@ -1,5 +1,5 @@
 import { currentUser } from "@clerk/nextjs/server";
-import { getSummaryCountByClerkId, getUserPriceId } from "@/lib/user";
+import { getSummaryCountByClerkId, getUserPlanStatus, getUserPriceId } from "@/lib/user";
 import { plans } from "@/lib/constants";
 import { redirect } from "next/navigation";
 import UploadFormClient from "@/components/UploadFormClient";
@@ -13,6 +13,11 @@ export default async function UploadPage() {
 
   const clerkId = user.id;
   const email = user.emailAddresses[0]?.emailAddress || "";
+  
+  const status = await getUserPlanStatus(email);
+if (status !== "active") {
+  redirect("/dashboardFallback");
+}
 
   const summaryCount = await getSummaryCountByClerkId(clerkId);
   const priceId = await getUserPriceId(email);

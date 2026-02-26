@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useUploadThing } from "@/utils/uploadthing";
 import { uploadSchema } from "@/lib/constants";
 import { Button } from "./ui/button";
 import { CheckCircle, Upload, Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface UploadFormClientProps {
   uploadLimit: number;
@@ -18,9 +18,19 @@ export default function UploadFormClient({
   summaryCount,
 }: UploadFormClientProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { startUpload } = useUploadThing("pdfUploader");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+
+  // Show success message when redirected from payment
+  useEffect(() => {
+    if (searchParams.get("success") === "true") {
+      toast.success("🎉 Payment successful! You can now upload PDFs.");
+      // Clean up URL
+      router.replace("/upload");
+    }
+  }, [searchParams, router]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -45,7 +55,7 @@ export default function UploadFormClient({
     // Check upload limit
     if (summaryCount >= uploadLimit) {
       toast.error(
-        `Upload limit reached (${uploadLimit}). Upgrade your plan for more uploads.`
+        `Upload limit reached (${uploadLimit}). Upgrade your plan for more uploads.`,
       );
       router.push("/dashboard");
       return;
@@ -68,19 +78,29 @@ export default function UploadFormClient({
         const fileData = uploadedFile[0] as any;
         console.log("Uploaded file data:", fileData);
 
-        toast.success(
-          "✨ File uploaded — summary will be generated on the server."
+        // Show processing message
+        const processingToastId = toast.loading(
+          "🤖 AI is generating your summary... This may take a few moments.",
         );
 
         setSelectedFile(null);
         // Reset file input
         const fileInput = document.getElementById(
-          "file-input"
+          "file-input",
         ) as HTMLInputElement;
         if (fileInput) fileInput.value = "";
 
-        // Redirect to dashboard after successful upload
-        router.push("/dashboard");
+        // Wait for summary generation (give it time to complete)
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+
+        toast.dismiss(processingToastId);
+        toast.success("✨ Summary generated! Redirecting to dashboard...");
+
+        // Small delay before redirect
+        setTimeout(() => {
+          router.push("/dashboard");
+          router.refresh(); // Refresh to load new data
+        }, 1000);
       }
     } catch (error) {
       toast.dismiss(uploadToastId);

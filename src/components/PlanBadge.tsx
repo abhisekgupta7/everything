@@ -37,7 +37,7 @@ export default function PlanBadge() {
       className={cn(
         "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full transition-all duration-300 cursor-pointer w-fit",
         isPro
-          ? "bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-md hover:shadow-lg border border-purple-400/50"
+          ? "bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-md hover:shadow-lg border border-purple-400/50"
           : "bg-slate-100 text-slate-600 shadow-sm hover:shadow-md hover:bg-slate-200 border border-slate-200"
       )}
     >

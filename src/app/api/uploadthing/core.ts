@@ -2,23 +2,34 @@ import { currentUser } from "@clerk/nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import extractSummaryFromPdf from "../../../actions/summary";
+import { getSummaryCountByClerkId, getUserPlanStatus, getUserPriceId } from "@/lib/user";
+import { plans } from "@/lib/constants";
 const f = createUploadthing();
 
 export const ourFileRouter = {
   pdfUploader: f({ pdf: { maxFileSize: "32MB" } })
-    .middleware(async () => {
-      try {
-        const user = await currentUser();
-        if (!user) {
-          console.log("No user found");
-          return { userId: "anonymous" };
-        }
-        return { userId: user.id };
-      } catch (error) {
-        console.error("Middleware error:", error);
-        throw new UploadThingError("Authentication failed");
-      }
-    })
+   .middleware(async () => {
+  const user = await currentUser();
+  if (!user) throw new UploadThingError("Not authenticated");
+  
+  const email = user.emailAddresses[0]?.emailAddress;
+  const status = await getUserPlanStatus(email);
+  if (status !== "active") {
+    throw new UploadThingError("Active subscription required");
+  }
+  
+  // Check upload limit
+  const count = await getSummaryCountByClerkId(user.id);
+  const priceId = await getUserPriceId(email);
+  const isPro = plans.find(p => p.priceId === priceId)?.name === "Pro";
+  const limit = isPro ? 1000 : 5;
+  
+  if (count >= limit) {
+    throw new UploadThingError("Upload limit reached");
+  }
+  
+  return { userId: user.id };
+})
     .onUploadComplete(async ({ metadata, file }) => {
       console.log("FIle uploaded:", file);
       console.log("Upload complete for user id:", metadata.userId);

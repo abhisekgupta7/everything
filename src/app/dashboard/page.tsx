@@ -48,17 +48,23 @@ export default async function DashboardPage() {
       </div>
 
       <div className="my-6 flex items-center justify-between">
-        <p>
-          You have reached your limit of {uploadlimit} uploads on the basic
-          plan.{" "}
-          <Link
-            href="/#pricing"
-            scroll={true}
-            className="inline-flex items-center gap-1 text-blue-600"
-          >
-            Click here to upgrade to Pro <ArrowRight />
-          </Link>
-        </p>
+
+        {
+          sumaryCount >= uploadlimit ?
+            <p>
+              You have reached your limit of {uploadlimit} uploads on the {plan ? plan.name : "Basic"}
+              plan.{" "}
+              <Link
+                href="/#pricing"
+                scroll={true}
+                className="inline-flex items-center gap-1 text-blue-600"
+              >
+                Click here to upgrade to Pro <ArrowRight />
+              </Link>
+            </p>
+            : null
+        }
+       
 
         {sumaryCount < uploadlimit ? (
           <Button asChild>
@@ -68,6 +74,7 @@ export default async function DashboardPage() {
             </Link>
           </Button>
         ) : null}
+
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
