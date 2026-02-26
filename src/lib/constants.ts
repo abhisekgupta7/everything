@@ -56,9 +56,14 @@ type Plans = {
   price: number;
   features: string[];
   paymentLink: string;
+  priceId: string; // IMPORTANT: Use PRICE ID (price_xxx) NOT product ID (prod_xxx)
 };
-// Payment links from Stripe Dashboard > Payment Links
-// Create payment links for your products and paste them here
+// HOW TO GET PRICE IDs:
+// 1. Go to: https://dashboard.stripe.com/test/products
+// 2. Click on your product (e.g., "Basic" or "Pro")
+// 3. In the "Pricing" section, you'll see the price with format: price_xxxxxxxxxxxxx
+// 4. Click the "..." menu next to the price → Copy price ID
+// 5. Paste it below (NOT the product ID which starts with prod_)
 export const plans: Plans[] = [
   {
     id: "basic",
@@ -71,6 +76,7 @@ export const plans: Plans[] = [
       "Email support",
     ],
     paymentLink: "https://buy.stripe.com/test_8x2cN514p86Qgbrgitebu00",
+    priceId: "price_1STEOADacSa3YsQZ2P9ak3Jb", // Replace with your Basic plan's PRICE ID
   },
   {
     id: "pro",
@@ -87,6 +93,7 @@ export const plans: Plans[] = [
       process.env.NODE_ENV === "development"
         ? "https://buy.stripe.com/test_14A4gz9AV86Q4sJ1nzebu01"
         : "https://buy.stripe.com/test_8x2cN514p86Qgbrgitebu00",
+    priceId: "price_1STEPvDacSa3YsQZFTFbeb6i", // Replace with your Pro plan's PRICE ID
   },
 ];
 

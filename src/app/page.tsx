@@ -346,18 +346,50 @@ function FeatureSection() {
 function PricingSection() {
   const [loading, setLoading] = useState<string | null>(null);
 
-  const handleSubscribe = (paymentLink: string, planId: string) => {
-    setLoading(planId);
+  const handleSubscribe = async (priceId: string, planName: string) => {
+    setLoading(priceId);
 
-    // Validate payment link
-    if (!paymentLink) {
-      toast.error("Payment link not configured. Please contact support.");
+    // Validate price ID is configured
+    if (
+      !priceId ||
+      priceId.startsWith("price_xxx") ||
+      priceId.startsWith("prod_")
+    ) {
+      toast.error("Please configure valid Stripe price IDs in constants.ts");
       setLoading(null);
       return;
     }
 
-    // Redirect directly to Stripe payment link
-    window.location.href = paymentLink;
+    try {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ priceId, planName }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create checkout session");
+      }
+
+      if (data.url) {
+        // Redirect to Stripe checkout
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL received");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to start checkout. Please try again.",
+      );
+      setLoading(null);
+    }
   };
 
   return (
@@ -382,7 +414,7 @@ function PricingSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
           {plans.map((plan, index) => {
             const isPro = plan.id === "pro";
-            const isLoading = loading === plan.id;
+            const isLoading = loading === plan.priceId;
             return (
               <motion.div
                 key={plan.id}
@@ -444,7 +476,7 @@ function PricingSection() {
 
                   {/* CTA Button */}
                   <Button
-                    onClick={() => handleSubscribe(plan.paymentLink, plan.id)}
+                    onClick={() => handleSubscribe(plan.priceId, plan.name)}
                     disabled={isLoading}
                     className={`w-full py-3 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ${
                       isPro
