@@ -59,6 +59,9 @@ type Plans = {
   paymentLink: string;
   priceId: string;
 };
+// IMPORTANT: Use price IDs (price_...), NOT product IDs (prod_...)
+// Get these from Stripe Dashboard > Products > Select a product > Pricing section
+// Example: price_1ABC123xyz456DEF789
 export const plans: Plans[] = [
   {
     id: "basic",
@@ -71,7 +74,7 @@ export const plans: Plans[] = [
       "Email support",
     ],
     paymentLink: "https://buy.stripe.com/test_8x2cN514p86Qgbrgitebu00",
-    priceId: "prod_TQ4Xs0tYn093Ou",
+    priceId: "price_REPLACE_WITH_YOUR_BASIC_PRICE_ID", // Replace with actual Stripe price ID
   },
   {
     id: "pro",
@@ -85,7 +88,7 @@ export const plans: Plans[] = [
       "Access to new features",
     ],
     paymentLink: process.env.NODE_ENV==='development'?"https://buy.stripe.com/test_14A4gz9AV86Q4sJ1nzebu01":"https://buy.stripe.com/test_8x2cN514p86Qgbrgitebu00",
-    priceId: "prod_TQ4ZQxUrVWXUuS",
+    priceId: "price_REPLACE_WITH_YOUR_PRO_PRICE_ID", // Replace with actual Stripe price ID
   },
    
   
