@@ -6,7 +6,6 @@ import {
   UploadCloud,
   Cpu,
   CreditCard,
-  
 } from "lucide-react";
 import { Rocket } from "lucide-react";
 import { z } from "zod";
@@ -57,8 +56,9 @@ type Plans = {
   price: number;
   features: string[];
   paymentLink: string;
-  priceId: string;
 };
+// Payment links from Stripe Dashboard > Payment Links
+// Create payment links for your products and paste them here
 export const plans: Plans[] = [
   {
     id: "basic",
@@ -71,7 +71,6 @@ export const plans: Plans[] = [
       "Email support",
     ],
     paymentLink: "https://buy.stripe.com/test_8x2cN514p86Qgbrgitebu00",
-    priceId: "prod_TQ4Xs0tYn093Ou",
   },
   {
     id: "pro",
@@ -84,29 +83,25 @@ export const plans: Plans[] = [
       "Priority email support",
       "Access to new features",
     ],
-    paymentLink: process.env.NODE_ENV==='development'?"https://buy.stripe.com/test_14A4gz9AV86Q4sJ1nzebu01":"https://buy.stripe.com/test_8x2cN514p86Qgbrgitebu00",
-    priceId: "prod_TQ4ZQxUrVWXUuS",
+    paymentLink:
+      process.env.NODE_ENV === "development"
+        ? "https://buy.stripe.com/test_14A4gz9AV86Q4sJ1nzebu01"
+        : "https://buy.stripe.com/test_8x2cN514p86Qgbrgitebu00",
   },
-   
-  
 ];
-
-
-
 
 export const uploadSchema = z.object({
   pdfFile: z
     .instanceof(File)
     .refine((file) => file.type === "application/pdf", {
       message: "Only PDF files are allowed",
-    }).refine((file)=>file.size<=20*1024*1024,{
-      message:"File size should be less than 20MB"
+    })
+    .refine((file) => file.size <= 20 * 1024 * 1024, {
+      message: "File size should be less than 20MB",
     }),
-  
-  
 });
 export type UploadFormData = z.infer<typeof uploadSchema>;
- 
+
 export const SUMMARY_SYSTEM_PROMPT = `You are a social 
 media content expert who makes complex documents easy and 
 engaging to read. Create a viral-style summary using 
@@ -159,4 +154,4 @@ Example format:
 * 🚀 This is another example point
 
 Never deviate from this format. Every line that contains 
-content must start with '* ' followed by an emoji.`
+content must start with '* ' followed by an emoji.`;
