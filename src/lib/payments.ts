@@ -1,4 +1,3 @@
-
 import Stripe from "stripe";
 import db from "@/lib/db";
 import {
@@ -29,33 +28,32 @@ export async function handleCheckoutSessionCompleted({
     // Use the provided stripe instance to fetch customer details (safe guarded)
     let customer: Stripe.Customer | Stripe.DeletedCustomer | null = null;
     try {
-      customer = (await stripe.customers.retrieve(customerId)) as
-        | Stripe.Customer
+      customer = (await stripe.customers.retrieve(
+        customerId,
+      )) as Stripe.Customer;
     } catch (err) {
       console.warn("Failed to retrieve Stripe customer:", err);
     }
 
     // Resolve email and name from customer or session fallback
-    const email =
-      (customer && "email" in customer ? customer.email : undefined)
+    const email = customer && "email" in customer ? customer.email : undefined;
 
-    const fullName =
-      (customer && "name" in customer ? customer.name : undefined) 
-
+    const fullName = customer && "name" in customer ? customer.name : undefined;
 
     const priceId =
       session.line_items?.data?.[0]?.price?.id ??
-      (session.metadata?.priceId as string | undefined)
+      (session.metadata?.priceId as string | undefined);
 
     if (!email) {
-      console.warn("No customer email available — cannot link payment to user.");
+      console.warn(
+        "No customer email available — cannot link payment to user.",
+      );
       return;
     }
 
-    // create or update user record
-    await createOrUpdateUser({
+    // Update existing user record (user must be created via Clerk first)
+    await updateUserWithPaymentInfo({
       email,
-      fullName,
       customerId,
       priceId,
       status: "active",
@@ -73,25 +71,24 @@ export async function handleCheckoutSessionCompleted({
   }
 }
 
-async function createOrUpdateUser({
+async function updateUserWithPaymentInfo({
   email,
-  fullName,
   customerId,
   priceId,
   status,
 }: {
   email: string;
-  fullName?: string | null;
   customerId: string;
   priceId?: string | null;
   status: string;
 }): Promise<User | null> {
   try {
     if (!email) {
-      console.error("createOrUpdateUser: email is required");
+      console.error("updateUserWithPaymentInfo: email is required");
       return null;
     }
 
+    // Find existing user (must have been created by Clerk)
     const rows = await db
       .select()
       .from(usersTable)
@@ -99,38 +96,36 @@ async function createOrUpdateUser({
       .limit(1);
 
     if (!rows || rows.length === 0) {
-      // Build insert payload — use the insert type shape
-      const newUser: NewUser = {
-        clerkId: null,
-        name: fullName ?? null,
-        email,
-        image: null,
-        customerId,
-        priceId: priceId ?? null,
-        status,
-      } as unknown as NewUser;
-
-      const inserted = await db.insert(usersTable).values(newUser).returning();
-      console.log("Created new user", inserted[0]);
-   
+      console.error(
+        `❌ User not found for email: ${email}. User must sign up with Clerk before making payment.`,
+      );
+      return null;
     }
 
-    // Update existing user
     const existing = rows[0] as User;
+
+    // Verify user has Clerk ID (was created properly)
+    if (!existing.clerkId) {
+      console.error(
+        `❌ User exists but has no Clerk ID: ${email}. This should not happen.`,
+      );
+      return null;
+    }
+
+    // Update existing user with payment info
     await db
       .update(usersTable)
       .set({
-        name: fullName ?? existing.name,
-     customerID: customerId ?? existing.customerID ?? null,
+        customerID: customerId,
         priceId: priceId ?? existing.priceId ?? null,
         status,
       })
       .where(eq(usersTable.id, existing.id));
 
-    console.log("Updated user:", existing.id);
-    return { ...existing, name: fullName ?? existing.name } as User;
+    console.log("✅ Updated user with payment info:", existing.id);
+    return existing;
   } catch (err) {
-    console.error("createOrUpdateUser error:", err);
+    console.error("updateUserWithPaymentInfo error:", err);
     return null;
   }
 }
@@ -157,7 +152,10 @@ async function createPaymentRecord({
       .limit(1);
 
     if (!rows || rows.length === 0) {
-      console.warn("No matching user for email, skipping payment record:", userEmail);
+      console.warn(
+        "No matching user for email, skipping payment record:",
+        userEmail,
+      );
       return;
     }
 
@@ -184,25 +182,26 @@ async function createPaymentRecord({
 
 export async function handleSubscriptionDeleted({
   subscriptionId,
-  stripe, }: {
-    subscriptionId: string;
-    stripe: Stripe;
-  }): Promise<void> {
+  stripe,
+}: {
+  subscriptionId: string;
+  stripe: Stripe;
+}): Promise<void> {
   console.log(`Handling deleted subscription: ${subscriptionId}`);
   try {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-    await db.update(usersTable)
+    await db
+      .update(usersTable)
       .set({
         priceId: null,
         status: "cancelled",
       })
-      .where(
-        eq(usersTable.customerID, subscription.customer as string)
-      );
-    console.log(`User with customer ID ${subscription.customer} downgraded to free plan.`);
+      .where(eq(usersTable.customerID, subscription.customer as string));
+    console.log(
+      `User with customer ID ${subscription.customer} downgraded to free plan.`,
+    );
   } catch (error) {
     console.error("Error handling subscription.deleted:", error);
     throw error;
   }
 }
-      

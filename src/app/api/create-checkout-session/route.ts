@@ -65,14 +65,19 @@ export async function POST(req: NextRequest) {
       mode: "subscription",
       success_url: `${baseUrl}/upload?success=true`,
       cancel_url: `${baseUrl}/?canceled=true`,
+      customer_update: {
+        address: "auto",
+      },
       metadata: {
         priceId: priceId,
         planName: planName,
         clerkId: user.id,
+        email: email,
       },
       subscription_data: {
         metadata: {
           clerkId: user.id,
+          email: email,
         },
       },
     });

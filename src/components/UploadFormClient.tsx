@@ -91,7 +91,7 @@ export default function UploadFormClient({
         if (fileInput) fileInput.value = "";
 
         // Wait for summary generation (give it time to complete)
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 5000));
 
         toast.dismiss(processingToastId);
         toast.success("✨ Summary generated! Redirecting to dashboard...");
