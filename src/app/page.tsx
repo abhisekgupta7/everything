@@ -348,6 +348,14 @@ function PricingSection() {
 
   const handleSubscribe = async (priceId: string, planName: string) => {
     setLoading(priceId);
+
+    // Validate price ID is configured
+    if (!priceId) {
+      toast.error("Payment configuration missing. Please contact support.");
+      setLoading(null);
+      return;
+    }
+
     try {
       const response = await fetch("/api/create-checkout-session", {
         method: "POST",
