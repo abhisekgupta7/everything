@@ -366,10 +366,16 @@ function PricingSection() {
       if (data.url) {
         // Redirect to Stripe checkout
         window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL received");
       }
     } catch (error) {
       console.error("Error:", error);
-      toast.error("Failed to start checkout. Please try again.");
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to start checkout. Please try again.",
+      );
       setLoading(null);
     }
   };

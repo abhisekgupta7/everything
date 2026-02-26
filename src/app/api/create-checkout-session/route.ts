@@ -82,11 +82,21 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    if (!session.url) {
+      console.error("Checkout session created but URL is missing");
+      return NextResponse.json(
+        { error: "Checkout URL not available" },
+        { status: 500 },
+      );
+    }
+
     return NextResponse.json({ url: session.url });
   } catch (error) {
     console.error("Error creating checkout session:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { error: "Failed to create checkout session" },
+      { error: `Failed to create checkout session: ${errorMessage}` },
       { status: 500 },
     );
   }
